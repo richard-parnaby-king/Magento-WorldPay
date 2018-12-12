@@ -167,7 +167,12 @@ class Phoenix_Worldpay_ProcessingController extends Mage_Core_Controller_Front_A
             $request = $this->getRequest()->getServer();
             $remoteAddr = $request['REMOTE_ADDR'];
         }
-        if (!preg_match('/\.worldpay\.com$/', gethostbyaddr($remoteAddr))) {
+        //Worldpay IPs.
+        $high_ip = ip2long('195.35.91.255');
+        $low_ip = ip2long('195.35.90.0');
+        $ip= ip2long($remoteAddr);
+        //if request ip is outside the above range, then not come from WorldPay.
+        if ($ip < $low_ip || $ip > $high_ip) {
             Mage::throwException('Domain can\'t be validated as WorldPay-Domain.');
         }
 
